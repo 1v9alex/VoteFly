@@ -1,0 +1,15 @@
+Database:
+  Type: SQLITE
+  Auto_Save_Interval: 20
+  Sync_Interval: -1
+  Table_Prefix: votefly
+  MySQL:
+    Username: root
+    Password: root
+    Host: localhost:3306
+    Database: minecraft
+    Options: ?allowPublicKeyRetrieval=true&useSSL=false
+  SQLite:
+    FileName: data.db
+  Purge:
+    For_Period: 60
