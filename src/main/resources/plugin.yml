@@ -1,0 +1,4 @@
+name: VoteFly
+version: '${project.version}'
+main: dev.bunghole.votefly.VoteFly
+api-version: '1.20'
