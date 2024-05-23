@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.sql.SQLException;
 
 public class VoteFly extends JavaPlugin {
@@ -19,9 +20,15 @@ public class VoteFly extends JavaPlugin {
         // Load configuration
         saveDefaultConfig();
 
+        // Ensure data folder exists
+        File dataFolder = getDataFolder();
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+
         // Initialize database
         String dbType = getConfig().getString("Database.Type");
-        String url = "jdbc:sqlite:" + getDataFolder() + "/" + getConfig().getString("Database.SQLite.FileName");
+        String url = "jdbc:sqlite:" + new File(getDataFolder(), getConfig().getString("Database.SQLite.FileName"));
         if (dbType.equalsIgnoreCase("MYSQL")) {
             url = "jdbc:mysql://" + getConfig().getString("Database.MySQL.Host") + "/" + getConfig().getString("Database.MySQL.Database") + getConfig().getString("Database.MySQL.Options");
         }
@@ -50,7 +57,7 @@ public class VoteFly extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Shutdown logic
+        // Plugin shutdown logic
         voteFlyManager.saveAll();
         getLogger().info("VoteFly has been disabled!");
     }
@@ -65,6 +72,7 @@ public class VoteFly extends JavaPlugin {
                     }
                     if (remainingTime <= 0) {
                         player.setFlying(false);
+                        player.setAllowFlight(false);
                         player.sendMessage(ChatColor.RED + "Your vote-fly time has expired.");
                     }
                 }

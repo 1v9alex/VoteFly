@@ -1,6 +1,5 @@
 package dev.bunghole.votefly;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -23,7 +22,7 @@ public class VoteFlyManager {
         long currentTime = System.currentTimeMillis();
         long newExpiryTime = currentTime + (timeInSeconds * 1000);
 
-        voteFlyTimes.put(playerId, voteFlyTimes.getOrDefault(playerId, currentTime) + newExpiryTime);
+        voteFlyTimes.put(playerId, voteFlyTimes.getOrDefault(playerId, currentTime) + (timeInSeconds * 1000));
         saveVoteFlyTime(playerId);
     }
 

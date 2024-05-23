@@ -121,6 +121,7 @@ public class VoteFlyCommand implements CommandExecutor {
         if (voteFlyManager.hasVoteFlyTime(player)) {
             if (player.isFlying()) {
                 player.setFlying(false);
+                player.setAllowFlight(false);
                 player.sendMessage(ChatColor.YELLOW + "Vote fly turned off, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
             } else {
                 player.setAllowFlight(true);
@@ -207,6 +208,7 @@ public class VoteFlyCommand implements CommandExecutor {
         }
     }
 
+
     private void handleVoteFlyRemove(CommandSender sender, String target, String time) {
         long timeInSeconds = parseTime(time);
         if (timeInSeconds <= 0) {
@@ -256,6 +258,7 @@ public class VoteFlyCommand implements CommandExecutor {
     private void handleVoteFlyOff(Player player) {
         if (voteFlyManager.hasVoteFlyTime(player)) {
             player.setFlying(false);
+            player.setAllowFlight(false);
             player.sendMessage(ChatColor.YELLOW + "Vote fly turned off, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
         } else {
             player.sendMessage(ChatColor.RED + "You do not have any vote-fly time right now.");
