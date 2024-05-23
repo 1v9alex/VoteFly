@@ -10,10 +10,12 @@ import java.util.UUID;
 public class VoteFlyManager {
 
     private final Map<UUID, Long> voteFlyTimes;
+    private final Map<UUID, Boolean> voteFlyEnabled;
     private final DatabaseManager databaseManager;
 
     public VoteFlyManager(DatabaseManager databaseManager) {
         this.voteFlyTimes = new HashMap<>();
+        this.voteFlyEnabled = new HashMap<>();
         this.databaseManager = databaseManager;
     }
 
@@ -48,6 +50,16 @@ public class VoteFlyManager {
     public boolean hasVoteFlyTime(Player player) {
         UUID playerId = player.getUniqueId();
         return voteFlyTimes.containsKey(playerId) && getRemainingVoteFlyTime(player) > 0;
+    }
+
+    public boolean isVoteFlyEnabled(Player player) {
+        UUID playerId = player.getUniqueId();
+        return voteFlyEnabled.getOrDefault(playerId, false);
+    }
+
+    public void setVoteFlyEnabled(Player player, boolean enabled) {
+        UUID playerId = player.getUniqueId();
+        voteFlyEnabled.put(playerId, enabled);
     }
 
     public void loadVoteFlyTime(UUID uuid) {

@@ -117,22 +117,6 @@ public class VoteFlyCommand implements CommandExecutor {
         return true;
     }
 
-    private void handleVoteFlyToggle(Player player) {
-        if (voteFlyManager.hasVoteFlyTime(player)) {
-            if (player.isFlying()) {
-                player.setFlying(false);
-                player.setAllowFlight(false);
-                player.sendMessage(ChatColor.YELLOW + "Vote fly turned off, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
-            } else {
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                player.sendMessage(ChatColor.YELLOW + "Vote fly turned on, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
-            }
-        } else {
-            player.sendMessage(ChatColor.RED + "You do not have any vote-fly time right now.");
-        }
-    }
-
     private void handleVoteFlyCheck(Player player) {
         if (voteFlyManager.hasVoteFlyTime(player)) {
             player.sendMessage(ChatColor.GREEN + "You have " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)) + " of vote-fly time left.");
@@ -208,7 +192,6 @@ public class VoteFlyCommand implements CommandExecutor {
         }
     }
 
-
     private void handleVoteFlyRemove(CommandSender sender, String target, String time) {
         long timeInSeconds = parseTime(time);
         if (timeInSeconds <= 0) {
@@ -245,10 +228,19 @@ public class VoteFlyCommand implements CommandExecutor {
         return totalSeconds;
     }
 
+    private void handleVoteFlyToggle(Player player) {
+        if (voteFlyManager.isVoteFlyEnabled(player)) {
+            handleVoteFlyOff(player);
+        } else {
+            handleVoteFlyOn(player);
+        }
+    }
+
     private void handleVoteFlyOn(Player player) {
         if (voteFlyManager.hasVoteFlyTime(player)) {
             player.setAllowFlight(true);
             player.setFlying(true);
+            voteFlyManager.setVoteFlyEnabled(player, true);
             player.sendMessage(ChatColor.YELLOW + "Vote fly turned on, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
         } else {
             player.sendMessage(ChatColor.RED + "You do not have any vote-fly time right now.");
@@ -256,13 +248,10 @@ public class VoteFlyCommand implements CommandExecutor {
     }
 
     private void handleVoteFlyOff(Player player) {
-        if (voteFlyManager.hasVoteFlyTime(player)) {
-            player.setFlying(false);
-            player.setAllowFlight(false);
-            player.sendMessage(ChatColor.YELLOW + "Vote fly turned off, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
-        } else {
-            player.sendMessage(ChatColor.RED + "You do not have any vote-fly time right now.");
-        }
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        voteFlyManager.setVoteFlyEnabled(player, false);
+        player.sendMessage(ChatColor.YELLOW + "Vote fly turned off, time remaining: " + formatTime(voteFlyManager.getRemainingVoteFlyTime(player)));
     }
 
     private String formatTime(long seconds) {

@@ -65,14 +65,13 @@ public class VoteFly extends JavaPlugin {
     private void scheduleReminders() {
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                long remainingTime = voteFlyManager.getRemainingVoteFlyTime(player);
-                if (player.isFlying() && voteFlyManager.hasVoteFlyTime(player)) {
+                if (voteFlyManager.isVoteFlyEnabled(player)) {
+                    long remainingTime = voteFlyManager.getRemainingVoteFlyTime(player);
                     if (remainingTime == 270 || remainingTime == 180 || remainingTime == 60 || remainingTime == 30) {
                         player.sendMessage(ChatColor.YELLOW + "You have " + formatTime(remainingTime) + " of vote-fly time left.");
                     }
                     if (remainingTime <= 0) {
-                        player.setFlying(false);
-                        player.setAllowFlight(false);
+                        handleVoteFlyOff(player);
                         player.sendMessage(ChatColor.RED + "Your vote-fly time has expired.");
                     }
                 }
@@ -85,6 +84,12 @@ public class VoteFly extends JavaPlugin {
         if (saveInterval > 0) {
             Bukkit.getScheduler().runTaskTimer(this, voteFlyManager::saveAll, saveInterval * 60L * 20L, saveInterval * 60L * 20L);
         }
+    }
+
+    private void handleVoteFlyOff(Player player) {
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        voteFlyManager.setVoteFlyEnabled(player, false);
     }
 
     private String formatTime(long seconds) {
